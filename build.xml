@@ -1,0 +1,34 @@
+<?xml version="1.0" ?> 
+<project name="TurnBasedGames" default="war">
+
+    <path id="compile.classpath">
+        <fileset dir="WebContent/WEB-INF/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="init">
+        <mkdir dir="build/ant"/>
+        <mkdir dir="C:\apache-tomcat8\webapps" />
+    </target>
+    
+    <target name="compile" depends="init" >
+        <javac destdir="build/ant" debug="true" srcdir="src">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+    
+    <target name="war" depends="compile">
+        <war destfile="C:\apache-tomcat8\webapps\tbg.war" webxml="WebContent/WEB-INF/web.xml">
+            <fileset dir="WebContent"/>
+            <lib dir="WebContent/WEB-INF/lib"/>
+            <classes dir="build/ant"/>
+        </war>
+    </target>
+
+    <target name="clean">
+        <delete dir="C:\apache-tomcat8\webapps" />
+        <delete dir="build" />
+    </target>
+    
+</project>
