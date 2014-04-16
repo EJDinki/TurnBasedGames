@@ -21,15 +21,29 @@ public class TicTacToeGameManager
     
     public void createGame(String playerId)
     {
+        // See if this player has a currently running Game
+        /*
+        if (games.containsKey(playerId))
+        {
+            System.out.println("contains player: " + playerId);
+            // Delete the other player in the game
+            // This could probably be cleaned up a bit more
+            TicTacToeGame game = games.get(playerId);
+            games.remove(playerId);
+            for (String player : games.keySet())
+            {
+                if (games.get(player) == game)
+                {
+                    games.remove(player);
+                    break;
+                }
+            }
+        }
+        */
         // If there is no waiting players, this player becomes the waiting player
         if (waitingPlayer == null)
         {
-            // See if this player has a currently running Game
-            if (games.containsKey(playerId))
-            {
-                games.get(playerId);// TODO invalidate this game
-                games.remove(playerId);
-            }
+            System.out.println("Player waiting: " + playerId);
             waitingPlayer = playerId;
         }
         // If there is a waiting player, create a game for the waiting player and this player
@@ -47,9 +61,15 @@ public class TicTacToeGameManager
         return games.get(playerId);
     }
 
-    public boolean gameHasBeenCreated(String playerId)
+    public boolean gameHasBeenCreated(String playerId) throws InvalidGameException
     {
-       return games.containsKey(playerId);
+       if (games.containsKey(playerId)) return true;
+       if (waitingPlayer != playerId)
+       {
+           System.out.println("gameHasBeenCreated invalid exception");
+           //throw new InvalidGameException();
+       }
+       return false;
     }
     
     // TODO make these else returns exception throws
@@ -79,6 +99,39 @@ public class TicTacToeGameManager
             return games.get(player).getBoard();
         }
         return null;
+    }
+    
+    // Block waiting for changes. Return if changes or timeout
+    // Timeout in seconds
+    public int waitForChanges(String player, int timeout, int series) throws InvalidGameException
+    {
+        for (int i = 0; i < timeout; i++)
+        {
+            if (games.containsKey(player))
+            {
+                int gameSeries = games.get(player).getSeries();
+                if (gameSeries > series)
+                {
+                    return gameSeries;
+                }
+
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException e)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                System.out.println("waitForChanges invalid exception");
+                //throw new InvalidGameException();
+                //return series;
+            }
+        }
+        return series;
     }
 
     public String getPlayerSymbol(String player)

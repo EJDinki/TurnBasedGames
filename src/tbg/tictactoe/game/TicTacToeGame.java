@@ -21,6 +21,8 @@ public class TicTacToeGame
     String winningPlayer;
     boolean hasWinner;
     
+    int series;
+    
     public TicTacToeGame(String playerOne, String playerTwo)
     {
         cells = new HashMap<String, String>();
@@ -31,6 +33,8 @@ public class TicTacToeGame
         currentTurn = this.playerOne;
         hasWinner = false;
         winningPlayer = "";
+        
+        series = 1;
 
         board = new ArrayList<List<String>>();
         for (int i = 0; i < 3; i++)
@@ -97,6 +101,7 @@ public class TicTacToeGame
                 }
                 winningPlayer = "";
                 currentTurn = playerOne;
+                series++;
                 return true;
             }
         }
@@ -113,6 +118,7 @@ public class TicTacToeGame
             {
                 nextPlayer();
             }
+            series++;
             return true;
         }
         else
@@ -222,6 +228,11 @@ public class TicTacToeGame
             return true;
         }
         return false;
+    }
+    
+    public int getSeries()
+    {
+        return series;
     }
 
     public static void main(String[] args)
