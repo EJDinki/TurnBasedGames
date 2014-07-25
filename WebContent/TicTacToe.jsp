@@ -58,14 +58,13 @@ function drawState(state){
 $(document).ready(function()
 {
     updateBoard();
-    //window.setInterval(updateBoard, 1000);
+    window.setInterval(updateBoard, 1000);
 });
 
-var updateRequest;
 var updateBoard = function()
 {
     //return; // REMOVE THIS
-    updateRequest = $.ajax({
+    $.ajax({
         type: "GET",
         url: "/tbg/TicTacToe?update=true", 
         success: function(json) {
@@ -77,7 +76,6 @@ var updateBoard = function()
         	    $("#playerSymbol").html("");
         	    $("#currentTurn").html("Waiting for another Player.");
         	    $("#winningPlayer").html("Please wait...");
-        	    setTimeout(updateBoard(), 1000);
         	}
         	else
         	{
@@ -91,18 +89,14 @@ var updateBoard = function()
                 {
                     $("#winningPlayer").html("");
                 }
-                updateBoard();
         	}
         	// Here we read json and set appropriate buttons
         	// indicate whos turn it is, set currentTurn span
 
+        	//updateBoard();
         },
         error: function(err) {
             console.log('Error:\n' + err.responseText + '  Status:\n' + err.status);
-        	    $("#playerSymbol").html("");
-        	    $("#currentTurn").html("");
-        	    //$("#winningPlayer").html("This game is no longer valid. Please refresh the page to join a new game.");
-        	    $("#winningPlayer").html("");
         }
     });
 };
@@ -117,8 +111,7 @@ function move(cell){
             success: function(json) {
                 if (json.response == "OK")
                 {
-                	//updateRequest.abort();
-                	//updateBoard();
+                	updateBoard();
                     //var myCell = $("input[name='"+cell.name+"']").val("X");
                     //cells[1].val("X"); // An alternative way to set the value, assuming we know the index
                     //cell.value = json.symbol;
@@ -154,8 +147,7 @@ function reset(){
         success: function(json) {
             if (json.response == "OK")
             {
-                //updateRequest.abort();
-                //updateBoard();
+                updateBoard();
                 //var myCell = $("input[name='"+cell.name+"']").val("X");
                 //cells[1].val("X"); // An alternative way to set the value, assuming we know the index
                 //cell.value = json.symbol;

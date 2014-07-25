@@ -36,10 +36,86 @@ public class TicTacToeContextListener implements ServletContextListener{
 
         final TicTacToeGameManager gameManager = new TicTacToeGameManager();
         sce.getServletContext().setAttribute("TicTacToeGameManager", gameManager);
+
+        /*
+        Map<TicTacToeGame, List<AsyncContext>> watchers = new HashMap<TicTacToeGame, List<AsyncContext>>();
+        sce.getServletContext().setAttribute("TicTacToeWatchers", watchers);
+
+        Queue<TicTacToeGame> games = new ConcurrentLinkedQueue<TicTacToeGame>();
+        sce.getServletContext().setAttribute("TicTacToeGames", games);
+        
+        Executor executor = Executors.newCachedThreadPool();
+        while(true)
+        {        
+           if(!games.isEmpty()) // There are unpublished new bid events.
+           {
+              TicTacToeGame game = games.poll();
+                    List<AsyncContext> gameWatchers = watchers.get(game); 
+                    for(final AsyncContext aCtx : gameWatchers)
+                    {
+                       executor.execute(new Runnable(){
+                          public void run() {
+                             // publish a new bid event to a watcher
+                              String sessionId = (String) aCtx.getRequest().getAttribute("SessionId");
+                            aCtx.getResponse().setContentType("application/json");
+                            try
+                            {
+                                PrintWriter out;
+                                out = aCtx.getResponse().getWriter();
+                                JSONObject json = new JSONObject();
+                                if (!gameManager.getWinningPlayer(sessionId).isEmpty())
+                                {
+                                    json.put("winningPlayer", gameManager.getWinningPlayerSymbol(sessionId));
+                                }
+                                json.putAll(gameManager.getBoard(sessionId));
+                                json.put("currentTurn", gameManager.getCurrentTurnSymbol(sessionId));
+                                json.put("playerSymbol", gameManager.getPlayerSymbol(sessionId));
+                                out.print(json);
+                                out.close();
+                            } catch (IOException e)
+                            {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                          };
+                       });
+                    }                           
+           }
+        }
+        */
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
         // TODO Auto-generated method stub
+        
     }
+
+    /*
+    class boardUpdate implements Runnable
+    {
+        TicTacToeGame game;
+        AsyncContext asyncContext;
+        
+        boardUpdate(TicTacToeGame game, AsyncContext asyncContext)
+        {
+            this.game = game;
+            this.asyncContext = asyncContext;
+        }
+
+        @Override
+        public void run()
+        {
+                if (!gameManager.getWinningPlayer(sessionId).isEmpty())
+                {
+                    json.put("winningPlayer", gameManager.getWinningPlayerSymbol(sessionId));
+                }
+                json.putAll(gameManager.getBoard(sessionId));
+                json.put("currentTurn", gameManager.getCurrentTurnSymbol(sessionId));
+                json.put("playerSymbol", gameManager.getPlayerSymbol(sessionId));
+            
+        }
+        
+    }
+    */
 }
